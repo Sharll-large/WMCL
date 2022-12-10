@@ -24,7 +24,7 @@ public class Launcher {
         if(ReadFile.read(JavaPath).equals("")){
             return "java";
         }else{
-            return "\"" + this.JavaPath + "\"";
+            return '"'+this.JavaPath+'"';
         }
     }
 

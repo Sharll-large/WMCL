@@ -12,15 +12,14 @@ import java.net.URL;
 import java.util.*;
 
 public class IndexController implements Initializable {
-    public List<String> before=new ArrayList<String>(Arrays.asList("Cute","Sussy","Shiny"));
-    public List<String> after=new ArrayList<String>(Arrays.asList("Baka","Guy"));
+    public List<String> before= new ArrayList<>(Arrays.asList("Cute", "Sussy", "Shiny"));
+    public List<String> after= new ArrayList<>(Arrays.asList("Baka", "Guy"));
     @FXML
-    private ComboBox javaChooser;
+    private ComboBox<String> javaChooser;
     @FXML
-    private ComboBox versionChooser;
+    private ComboBox<String> versionChooser;
     @FXML
     private TextField nameInput;
-    private GameScanner scanner = new GameScanner();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -32,16 +31,16 @@ public class IndexController implements Initializable {
 
     @FXML
     protected void scanJava() {
-        List<String> javaList = scanner.scanJava();
-        javaChooser.getItems().removeAll();
+        List<String> javaList = GameScanner.scanJava();
+        javaChooser.getItems().removeAll(javaList);
         javaChooser.getItems().addAll(javaList);
         javaChooser.setValue("Please choose:");
     }
 
     @FXML
     protected void scanVersion() {
-        List<String> versionList = scanner.scanMc("D:\\Plain Minecraft Launcher\\.minecraft");
-        versionChooser.getItems().removeAll();
+        List<String> versionList = GameScanner.scanMc("D:\\Plain Minecraft Launcher\\.minecraft");
+        versionChooser.getItems().removeAll(versionList);
         versionChooser.getItems().addAll(versionList);
         versionChooser.setValue("Please choose:");
     }
@@ -58,10 +57,10 @@ public class IndexController implements Initializable {
 
     @FXML
     protected void launch() {
-        String javaPath = javaChooser.getValue().toString();
-        String gameVersion = versionChooser.getValue().toString();
+        String javaPath = javaChooser.getValue();
+        String gameVersion = versionChooser.getValue();
         String playerName = nameInput.getText();
-        if(javaPath!="Please choose:" && gameVersion!="Please choose:" && playerName!=""){
+        if(!Objects.equals(javaPath, "Please choose:") && !Objects.equals(gameVersion, "Please choose:") && !Objects.equals(playerName, "")){
             Launcher launcher=new Launcher("D:\\Plain Minecraft Launcher\\.minecraft",gameVersion,javaPath,playerName);
             launcher.Launch();
         }

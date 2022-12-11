@@ -24,7 +24,7 @@ public class Launcher {
         if(ReadFile.read(JavaPath).equals("")){
             return "java";
         }else{
-            return '"'+this.JavaPath+'"';
+            return "\"" + this.JavaPath + "\"";
         }
     }
 
@@ -46,7 +46,7 @@ public class Launcher {
     }
 
     public String SolveArguments(){
-        String GameArguments = "";
+        String GameArguments;
         if(MinecraftObject.isNull("arguments")){
             GameArguments = MinecraftObject.get("minecraftArguments").toString();
         }else{
@@ -58,15 +58,13 @@ public class Launcher {
                 try{
                     new JSONObject(i.toString());
                 }catch(JSONException e) {
-                    System.out.println(i);
-                    System.out.println("omg");
-                    arguments.append(i).append(" ");
+                    arguments.append("\"").append(i).append("\" ");
                 }
             }
             GameArguments = arguments.toString();
 
         }
-        return "-Djava.library.path=${natives_directory} -cp ${classpath} ${MainClass} " + GameArguments;
+        return "\"-Djava.library.path=${natives_directory}\" -cp \"${classpath}\" ${MainClass} " + GameArguments;
     }
     public String SolveClassPath(){
         StringBuilder classpath = new StringBuilder();
@@ -106,7 +104,21 @@ public class Launcher {
         return classpath.toString();
     }
     public void Launch(){
-        System.out.println((SolveJava() + " " + SolveArguments()).replace("${MainClass}", MinecraftObject.get("mainClass").toString()).replace("${classpath}", SolveClassPath()).replace("${natives_directory}", Paths.get(McPath, "versions", Version, "natives").toString()));
+        String MainString = SolveJava() + " " + SolveArguments();
+        MainString = MainString.replace("${natives_directory}",  Paths.get(this.McPath, "versions", this.Version, "natives-windows").toString());
+        MainString = MainString.replace("${classpath}", SolveClassPath());
+        MainString = MainString.replace("${MainClass}", MinecraftObject.get("mainClass").toString());
+        MainString = MainString.replace("${auth_player_name}", PlayerName);
+        MainString = MainString.replace("${version_name}", this.Version);
+        MainString = MainString.replace("${user_type}", "Legacy");
+        MainString = MainString.replace("${version_type}", "\"WMCL Indev\"");
+        MainString = MainString.replace("${auth_uuid}", "0");
+        MainString = MainString.replace("${game_directory}", this.McPath);
+        MainString = MainString.replace("${assets_root}", Paths.get(this.McPath, "assets").toString());
+        MainString = MainString.replace("${assets_index_name}", new JSONObject(this.MinecraftObject.get("assetIndex").toString()).get("id").toString());
+        MainString = MainString.replace("${auth_access_token}", "0");
+        MainString = MainString.replace("${launcher_name}", "WMCL");
+        System.out.println(MainString);
         //System.out.println(SolveArguments());
         //System.out.println(SolveClassPath());
 
